@@ -23,12 +23,6 @@ from output import (
     display_solutions
 )
 
-from volunteer_scheduling import (
-    build_volunteer_assignments,
-    load_volunteers,
-)
-
-
 
 # ----------------------------------------------------
 # Files
@@ -36,7 +30,6 @@ from volunteer_scheduling import (
 
 MATCHUPS_FILE = "matchups.csv"
 AVAIL_FILE = "availabilities.csv"
-VOLUNTEER_FILE = "volunteers.csv"
 
 OUTPUT_FILE = "schedule.csv"
 
@@ -70,15 +63,6 @@ print(
 
 print(
     list(availability.keys())
-)
-
-
-volunteers = load_volunteers(
-    VOLUNTEER_FILE
-)
-
-print(
-    f"Loaded {len(volunteers)} volunteers"
 )
 
 
@@ -362,33 +346,12 @@ first_solution_data = extract_solution(
     solver
 )
 
-volunteer_solution = build_volunteer_assignments(
-    {
-        "data": first_solution_data
-    },
-    match_data,
-    volunteers,
-    slot_lookup,
-    SLOTS_PER_DAY,
-    NUM_SLOTS,
-    all_slots,
-)
-
 first_solution = {
     "data":
         first_solution_data,
 
     "objective":
         solver.ObjectiveValue(),
-
-    "volunteer_assignments":
-        volunteer_solution["assignments"],
-
-    "volunteer_overflow_count":
-        volunteer_solution["overflow_count"],
-
-    "volunteer_adjacency_penalty":
-        volunteer_solution["adjacency_penalty"],
 }
 
 
@@ -562,18 +525,6 @@ for solution_number in range(
         solver
     )
 
-    volunteer_solution = build_volunteer_assignments(
-        {
-            "data": solution_data
-        },
-        match_data,
-        volunteers,
-        slot_lookup,
-        SLOTS_PER_DAY,
-        NUM_SLOTS,
-        all_slots,
-    )
-
     solutions.append(
         {
             "data":
@@ -581,15 +532,6 @@ for solution_number in range(
 
             "objective":
                 solver.ObjectiveValue(),
-
-            "volunteer_assignments":
-                volunteer_solution["assignments"],
-
-            "volunteer_overflow_count":
-                volunteer_solution["overflow_count"],
-
-            "volunteer_adjacency_penalty":
-                volunteer_solution["adjacency_penalty"],
         }
     )
 

@@ -1,12 +1,11 @@
 # Scheduling Tool
 
-This project schedules race matchups and assigns volunteers for commentator and restreamer roles.
+This project schedules race matchups based on runner availability and preferred slots.
 
 ## Features
 
-- Loads runner and volunteer data from CSV files
+- Loads runner availability data from CSV files
 - Builds a scheduling model for race slots
-- Assigns commentators and restreamers with fairness-aware constraints
 - Writes the resulting schedule to schedule.csv
 
 ## Requirements

@@ -53,22 +53,6 @@ def build_dataframe(
         )
 
 
-        commentator_1 = ""
-        commentator_2 = ""
-        restreamer = ""
-
-        volunteer_assignments = solution.get("volunteer_assignments", [])
-        if volunteer_assignments:
-            race_assignments = volunteer_assignments[race["race"]]
-            for assignment in race_assignments:
-                if assignment["role"] == "Commentator":
-                    if not commentator_1:
-                        commentator_1 = assignment["volunteer"]
-                    elif not commentator_2:
-                        commentator_2 = assignment["volunteer"]
-                elif assignment["role"] == "Restreamer":
-                    restreamer = assignment["volunteer"]
-
         rows.append(
             {
                 "runner1":
@@ -86,15 +70,6 @@ def build_dataframe(
                             race["slot"]
                         ]
                     ),
-
-                "Commentator 1":
-                    commentator_1,
-
-                "Commentator 2":
-                    commentator_2,
-
-                "Restreamer":
-                    restreamer
             }
         )
 
@@ -114,10 +89,7 @@ def build_dataframe(
         [
             "runner1",
             "runner2",
-            "scheduled",
-            "Commentator 1",
-            "Commentator 2",
-            "Restreamer"
+            "scheduled"
         ]
     ]
 
