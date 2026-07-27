@@ -4,6 +4,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
+from config import PREREC_PENALTY
 from parser import parse_time
 from scoring import calculate_score
 from model import is_adjacent_slot_pair
@@ -38,7 +39,7 @@ class ScoringTests(unittest.TestCase):
         self.assertEqual(
             score["score"],
             score["double_prerec"] * 1_000_000
-            + score["prerec_count"] * 10_000
+            + score["prerec_count"] * PREREC_PENALTY
             + score["bonus_count"] * -1_000
             + score["isolated_count"] * 1_000
             + score["empty_days"] * 1
