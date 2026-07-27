@@ -1,0 +1,415 @@
+# parser.py
+
+import pandas as pd
+import re
+
+
+# ----------------------------------------------------
+# Constants
+# ----------------------------------------------------
+
+DAYS = [
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday"
+]
+
+
+UTC_SLOTS = [
+    "15:00",
+    "16:30",
+    "18:00",
+    "19:30",
+    "21:00",
+    "22:30",
+    "24:00",
+    "1:30"
+]
+
+
+# ----------------------------------------------------
+# Time helpers
+# ----------------------------------------------------
+
+def timezone_offset(tz):
+
+    tz = str(tz).strip()
+
+
+    if tz == "UTC":
+        return 0
+
+
+    match = re.match(
+        r"UTC([+-]\d+)",
+        tz
+    )
+
+
+    if not match:
+
+        raise Exception(
+            f"Invalid timezone: {tz}"
+        )
+
+
+    return int(
+        match.group(1)
+    )
+
+
+
+def parse_time(day_index, value):
+
+    value = str(value).strip()
+
+    if value not in UTC_SLOTS:
+        raise ValueError(f"Unsupported slot: {value}")
+
+    slot_index = UTC_SLOTS.index(value)
+
+    return (
+        day_index * len(UTC_SLOTS)
+        +
+        slot_index
+    )
+
+
+
+def to_utc(minutes, offset):
+
+    return (
+        minutes
+        -
+        offset * 60
+    )
+
+
+
+def slot_to_minutes(day_index, slot):
+
+    if slot not in UTC_SLOTS:
+        raise ValueError(f"Unsupported slot: {slot}")
+
+    slot_index = UTC_SLOTS.index(slot)
+
+    return (
+        day_index * len(UTC_SLOTS)
+        +
+        slot_index
+    )
+
+
+
+def display_time(slot_value):
+
+    if slot_value is None:
+        return ""
+
+
+    day = slot_value // len(UTC_SLOTS)
+
+    slot_index = slot_value % len(UTC_SLOTS)
+
+
+    if day < 0:
+        day = 0
+
+    if day >= len(DAYS):
+        day = len(DAYS) - 1
+
+    if slot_index < 0:
+        slot_index = 0
+
+    if slot_index >= len(UTC_SLOTS):
+        slot_index = len(UTC_SLOTS) - 1
+
+
+    return (
+        f"{DAYS[day].capitalize()} "
+        f"{UTC_SLOTS[slot_index]}"
+    )
+
+
+
+# ----------------------------------------------------
+# Load availability CSV
+# ----------------------------------------------------
+
+def load_availability(
+    filename
+):
+
+    avail = pd.read_csv(
+        filename
+    )
+
+
+    # Normalize headers
+
+    avail.columns = (
+        avail.columns
+        .str.strip()
+        .str.lower()
+    )
+
+
+    # Clean runner names
+
+    avail["runner"] = (
+        avail["runner"]
+        .astype(str)
+        .str.replace(
+            '"',
+            '',
+            regex=False
+        )
+        .str.replace(
+            "\xa0",
+            " ",
+            regex=False
+        )
+        .str.strip()
+    )
+
+
+    availability = {}
+
+
+
+    for _, row in avail.iterrows():
+
+        runner = row["runner"]
+
+
+        offset = timezone_offset(
+            row["timezone"]
+        )
+
+
+        utc_times = set()
+
+
+
+        for day_index, day in enumerate(DAYS):
+
+
+            values = row.get(
+                day,
+                ""
+            )
+
+
+            if pd.isna(values):
+
+                continue
+
+
+
+            values = str(values).strip()
+
+
+            if values == "":
+
+                continue
+
+
+
+            for t in values.split(","):
+
+                t = t.strip()
+
+
+                local_minutes = parse_time(
+                    day_index,
+                    t
+                )
+
+
+                utc_minutes = to_utc(
+                    local_minutes,
+                    offset
+                )
+
+
+                utc_times.add(
+                    utc_minutes
+                )
+
+
+
+        availability[runner] = utc_times
+
+
+
+    return availability
+
+
+
+# ----------------------------------------------------
+# Load matchups CSV
+# ----------------------------------------------------
+
+def load_matchups(
+    filename
+):
+
+    matches = pd.read_csv(
+        filename
+    )
+
+
+    matches.columns = (
+        matches.columns
+        .str.strip()
+        .str.lower()
+    )
+
+
+    matches["runner1"] = (
+        matches["runner1"]
+        .astype(str)
+        .str.replace(
+            '"',
+            '',
+            regex=False
+        )
+        .str.strip()
+    )
+
+
+    matches["runner2"] = (
+        matches["runner2"]
+        .astype(str)
+        .str.replace(
+            '"',
+            '',
+            regex=False
+        )
+        .str.strip()
+    )
+
+
+    return matches
+
+
+
+# ----------------------------------------------------
+# Create UTC slot lookup
+# ----------------------------------------------------
+
+def create_slot_lookup():
+
+    slot_lookup = {}
+
+    all_slots = []
+
+
+    for day_index in range(
+        len(DAYS)
+    ):
+
+        for slot in UTC_SLOTS:
+
+
+            slot_value = slot_to_minutes(
+                day_index,
+                slot
+            )
+
+
+            slot_lookup[slot_value] = len(
+                all_slots
+            )
+
+
+            all_slots.append(
+                slot_value
+            )
+
+
+
+    return (
+        slot_lookup,
+        all_slots
+    )
+
+def calculate_preferred_slots(
+    availability
+):
+
+    preferred = {}
+
+
+    for runner, slots in availability.items():
+
+        runner_preferences = set()
+
+
+        sorted_slots = sorted(
+            slots
+        )
+
+
+        # Split into consecutive groups
+
+        groups = []
+
+        current = []
+
+
+        for slot in sorted_slots:
+
+            if not current:
+
+                current.append(slot)
+
+            else:
+
+                if slot - current[-1] == 90:
+
+                    current.append(slot)
+
+                else:
+
+                    groups.append(
+                        current
+                    )
+
+                    current = [
+                        slot
+                    ]
+
+
+        if current:
+
+            groups.append(
+                current
+            )
+
+
+
+        for group in groups:
+
+            length = len(group)
+
+
+            # Only odd sized groups have
+            # a true middle
+
+            if length % 2 == 1:
+
+                middle = group[
+                    length // 2
+                ]
+
+                runner_preferences.add(
+                    middle
+                )
+
+
+        preferred[runner] = runner_preferences
+
+
+    return preferred
