@@ -1,0 +1,78 @@
+import io
+import sys
+import tempfile
+import unittest
+from contextlib import redirect_stdout
+from pathlib import Path
+
+import pandas as pd
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from output import display_solutions
+
+
+class OutputTests(unittest.TestCase):
+    def test_flags_prerecord_at_or_before_first_available_slot(self):
+        solutions = [
+            {
+                "data": [
+                    {
+                        "race": 0,
+                        "slot": 1,
+                        "p1_prerec": True,
+                        "p2_prerec": False,
+                    }
+                ]
+            }
+        ]
+
+        match_data = [
+            {
+                "runner1": "RunnerOne",
+                "runner2": "RunnerTwo",
+                "r1_slots": {2},
+                "r2_slots": {0, 1},
+                "r1_preferred": {2},
+                "r2_preferred": {0},
+            }
+        ]
+
+        all_slots = [0, 1, 2]
+
+        def fake_display_time(slot_value):
+            return f"Slot {slot_value}"
+
+        runner_preferred_slots = {
+            "RunnerOne": {0},
+            "RunnerTwo": {0},
+        }
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            output_path = Path(temp_dir) / "schedule.csv"
+
+            stdout = io.StringIO()
+
+            with redirect_stdout(stdout):
+                display_solutions(
+                    solutions,
+                    match_data,
+                    all_slots,
+                    fake_display_time,
+                    slots_per_day=1,
+                    output_file=str(output_path),
+                    runner_preferred_slots=runner_preferred_slots,
+                )
+
+            saved = pd.read_csv(output_path)
+
+        text = stdout.getvalue()
+
+        self.assertIn("FIRST-SLOT PRERECORD VIOLATION", text)
+        self.assertIn("RunnerOne", text)
+        self.assertIn("warning", saved.columns)
+        self.assertEqual(saved.loc[0, "warning"], "Prerecord before first available slot")
+
+
+if __name__ == "__main__":
+    unittest.main()

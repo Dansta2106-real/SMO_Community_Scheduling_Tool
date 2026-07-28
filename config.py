@@ -39,6 +39,10 @@ CONSECUTIVE_BONUS = -1_000
 
 LATE_PREREC_PENALTY = 30
 
+# Keep fully unavailable matchups as late as possible,
+# but never strong enough to justify creating new prerecords.
+NO_AVAILABILITY_LATE_PENALTY = 1_000
+
 PREFERRED_SLOT_PENALTY = 1
 
 EMPTY_DAY_PENALTY = 1

@@ -8,6 +8,7 @@ from config import (
     ISOLATED_RACE_PENALTY,
     CONSECUTIVE_BONUS,
     LATE_PREREC_PENALTY,
+    NO_AVAILABILITY_LATE_PENALTY,
     EMPTY_DAY_PENALTY,
     PREFERRED_SLOT_PENALTY
 )
@@ -176,8 +177,6 @@ def build_model(
             row
         )
 
-
-
     # ------------------------------------------------
     # No duplicate slots
     # ------------------------------------------------
@@ -306,6 +305,19 @@ def build_model(
             objective.append(
                 LATE_PREREC_PENALTY * (num_slots - s) * late_penalty
             )
+
+        # Fully unavailable matchups are always prerecorded.
+        # Place them as late as possible, but with a lower weight
+        # than adding new prerecorded runners.
+        if not match["r1_slots"] and not match["r2_slots"]:
+
+            for s in match["possible_slots"]:
+
+                at_slot = race_in_slot[i][s]
+
+                objective.append(
+                    NO_AVAILABILITY_LATE_PENALTY * (num_slots - s) * at_slot
+                )
 
 
             late_penalty = model.NewBoolVar(

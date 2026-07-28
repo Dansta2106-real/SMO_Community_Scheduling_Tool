@@ -199,9 +199,16 @@ for _, row in matches.iterrows():
 
 
     if not possible_slots:
+        # No runner availability at all for this matchup.
+        # Allow any slot; model objectives will keep it prerecorded
+        # and push it as late as possible.
+        possible_slots = set(
+            range(NUM_SLOTS)
+        )
 
-        raise Exception(
-            f"No possible slots for {r1} vs {r2}"
+        print(
+            f"Warning: {r1} vs {r2} has no availability; "
+            "forcing prerecorded late placement"
         )
 
 

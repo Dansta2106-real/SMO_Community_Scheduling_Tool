@@ -23,6 +23,44 @@ def format_runner(
     return name
 
 
+def build_prerec_warning_messages(
+    race,
+    match,
+    scheduled_label
+):
+
+    warnings = []
+
+
+    if (
+        race["p1_prerec"]
+        and
+        match["r1_slots"]
+        and
+        race["slot"] <= min(match["r1_slots"])
+    ):
+
+        warnings.append(
+            "Prerecord before first available slot"
+        )
+
+
+    if (
+        race["p2_prerec"]
+        and
+        match["r2_slots"]
+        and
+        race["slot"] <= min(match["r2_slots"])
+    ):
+
+        warnings.append(
+            "Prerecord before first available slot"
+        )
+
+
+    return warnings
+
+
 
 def build_dataframe(
     solution,
@@ -52,6 +90,18 @@ def build_dataframe(
             race["p2_prerec"]
         )
 
+        scheduled_label = display_time(
+            all_slots[
+                race["slot"]
+            ]
+        )
+
+        warnings = build_prerec_warning_messages(
+            race,
+            match,
+            scheduled_label
+        )
+
 
         rows.append(
             {
@@ -65,11 +115,10 @@ def build_dataframe(
                     race["slot"],
 
                 "scheduled":
-                    display_time(
-                        all_slots[
-                            race["slot"]
-                        ]
-                    ),
+                    scheduled_label,
+
+                "warning":
+                    " | ".join(warnings),
             }
         )
 
@@ -89,9 +138,74 @@ def build_dataframe(
         [
             "runner1",
             "runner2",
-            "scheduled"
+            "scheduled",
+            "warning"
         ]
     ]
+
+
+def find_prerec_first_slot_violations(
+    solution,
+    match_data,
+    all_slots,
+    display_time
+):
+
+    violations = []
+
+
+    for race in solution["data"]:
+
+        match_index = race["race"]
+
+        match = match_data[
+            match_index
+        ]
+
+        scheduled_label = display_time(
+            all_slots[
+                race["slot"]
+            ]
+        )
+
+        warnings = build_prerec_warning_messages(
+            race,
+            match,
+            scheduled_label
+        )
+
+        violations.extend(warnings)
+
+
+    return violations
+
+
+def print_prerec_first_slot_violations(
+    violations
+):
+
+    if not violations:
+        return
+
+
+    print()
+
+    print(
+        "!" * 10,
+        "FIRST-SLOT PRERECORD VIOLATION",
+        "!" * 10
+    )
+
+
+    for violation in violations:
+
+        print(
+            violation
+        )
+
+    print(
+        "!" * 46
+    )
 
 
 
@@ -138,6 +252,19 @@ def display_solutions(
             df.to_string(
                 index=False
             )
+        )
+
+
+        violations = find_prerec_first_slot_violations(
+            solution,
+            match_data,
+            all_slots,
+            display_time
+        )
+
+
+        print_prerec_first_slot_violations(
+            violations
         )
 
 
