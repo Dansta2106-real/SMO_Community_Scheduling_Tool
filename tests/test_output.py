@@ -13,6 +13,63 @@ from output import display_solutions
 
 
 class OutputTests(unittest.TestCase):
+    def test_flags_missing_runner_availability_in_warning_column(self):
+        solutions = [
+            {
+                "data": [
+                    {
+                        "race": 0,
+                        "slot": 0,
+                        "p1_prerec": False,
+                        "p2_prerec": False,
+                    }
+                ]
+            }
+        ]
+
+        match_data = [
+            {
+                "runner1": "MissingRunner",
+                "runner2": "RunnerTwo",
+                "r1_slots": set(),
+                "r2_slots": {0},
+                "r1_preferred": set(),
+                "r2_preferred": {0},
+                "missing_availability_runners": ["MissingRunner"],
+            }
+        ]
+
+        all_slots = [0]
+
+        def fake_display_time(slot_value):
+            return f"Slot {slot_value}"
+
+        runner_preferred_slots = {
+            "MissingRunner": set(),
+            "RunnerTwo": {0},
+        }
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            output_path = Path(temp_dir) / "schedule.csv"
+
+            with redirect_stdout(io.StringIO()):
+                display_solutions(
+                    solutions,
+                    match_data,
+                    all_slots,
+                    fake_display_time,
+                    slots_per_day=1,
+                    output_file=str(output_path),
+                    runner_preferred_slots=runner_preferred_slots,
+                )
+
+            saved = pd.read_csv(output_path)
+
+        self.assertEqual(
+            saved.loc[0, "warning"],
+            "MissingRunner has not submitted availabilities",
+        )
+
     def test_flags_prerecord_at_or_before_first_available_slot(self):
         solutions = [
             {

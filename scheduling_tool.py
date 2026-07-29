@@ -153,19 +153,27 @@ for _, row in matches.iterrows():
 
     r2 = row["runner2"]
 
+    missing_availability_runners = []
+
 
 
     if r1 not in availability:
-
-        raise Exception(
-            f"{r1} missing from availability"
+        availability[r1] = set()
+        runner_preferred_slots[r1] = set()
+        missing_availability_runners.append(r1)
+        print(
+            f"Warning: {r1} missing from availability; "
+            "treating as empty availability"
         )
 
 
     if r2 not in availability:
-
-        raise Exception(
-            f"{r2} missing from availability"
+        availability[r2] = set()
+        runner_preferred_slots[r2] = set()
+        missing_availability_runners.append(r2)
+        print(
+            f"Warning: {r2} missing from availability; "
+            "treating as empty availability"
         )
 
 
@@ -226,6 +234,8 @@ for _, row in matches.iterrows():
             "r1_preferred": r1_preferred,
 
             "r2_preferred": r2_preferred,
+
+            "missing_availability_runners": missing_availability_runners,
 
             "possible_slots": list(possible_slots)
         }

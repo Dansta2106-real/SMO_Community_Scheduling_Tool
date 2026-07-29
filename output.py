@@ -57,6 +57,11 @@ def build_prerec_warning_messages(
             "Prerecord before first available slot"
         )
 
+    for runner in match.get("missing_availability_runners", []):
+        warnings.append(
+            f"{runner} has not submitted availabilities"
+        )
+
 
     return warnings
 
