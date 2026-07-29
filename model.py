@@ -10,7 +10,8 @@ from config import (
     LATE_PREREC_PENALTY,
     NO_AVAILABILITY_LATE_PENALTY,
     EMPTY_DAY_PENALTY,
-    PREFERRED_SLOT_PENALTY
+    PREFERRED_SLOT_PENALTY,
+    CENTER_SLOT_PENALTY
 )
 
 
@@ -34,6 +35,16 @@ def is_adjacent_slot_pair(left_index, right_index, slot_values, slots_per_day):
         ==
         slot_values[left_index] % slots_per_day + 1
     )
+
+
+def slot_outer_distance(slot_value, slots_per_day):
+    """Return distance from the daily center (0 for center-most slots)."""
+
+    slot_in_day = slot_value % slots_per_day
+    nearest_edge = min(slot_in_day, slots_per_day - 1 - slot_in_day)
+    max_nearest_edge = (slots_per_day - 1) // 2
+
+    return max_nearest_edge - nearest_edge
 
 
 def build_model(
@@ -573,6 +584,28 @@ def build_model(
 
         objective.append(
             EMPTY_DAY_PENALTY * empty
+        )
+
+    # ------------------------------------------------
+    # Prefer center slots over outer slots
+    # ------------------------------------------------
+
+    for s in range(num_slots):
+
+        outer_distance = slot_outer_distance(
+            s,
+            slots_per_day
+        )
+
+        if outer_distance == 0:
+            continue
+
+        objective.append(
+            CENTER_SLOT_PENALTY
+            *
+            outer_distance
+            *
+            slot_used[s]
         )
 
     # ------------------------------------------------

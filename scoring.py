@@ -7,9 +7,10 @@ from config import (
     CONSECUTIVE_BONUS,
     LATE_PREREC_PENALTY,
     EMPTY_DAY_PENALTY,
-    PREFERRED_SLOT_PENALTY
+    PREFERRED_SLOT_PENALTY,
+    CENTER_SLOT_PENALTY
 )
-from model import is_adjacent_slot_pair
+from model import is_adjacent_slot_pair, slot_outer_distance
 
 
 
@@ -325,6 +326,22 @@ def calculate_score(
 
             empty_days += 1
 
+    # ------------------------------------------------
+    # Center-slot preference
+    # ------------------------------------------------
+
+    center_slot_penalty = 0
+
+    for slot in occupied:
+        center_slot_penalty += (
+            slot_outer_distance(
+                slot,
+                slots_per_day
+            )
+            *
+            CENTER_SLOT_PENALTY
+        )
+
 
 
     # ------------------------------------------------
@@ -363,6 +380,10 @@ def calculate_score(
 
         +
 
+        center_slot_penalty
+
+        +
+
         late_prerec_penalty
     )
 
@@ -381,6 +402,8 @@ def calculate_score(
         "empty_days": empty_days,
 
         "preferred_penalty": preferred_penalty,
+
+        "center_slot_penalty": center_slot_penalty,
 
         "late_prerec_penalty": late_prerec_penalty,
 
@@ -443,6 +466,12 @@ def print_score(score):
         f"{score['preferred_penalty']} x "
         f"{PREFERRED_SLOT_PENALTY} = "
         f"{score['preferred_penalty'] * PREFERRED_SLOT_PENALTY}"
+    )
+
+
+    print(
+        f"Outer-slot penalties: "
+        f"{score['center_slot_penalty']}"
     )
 
 

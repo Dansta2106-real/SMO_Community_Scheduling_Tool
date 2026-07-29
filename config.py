@@ -16,6 +16,9 @@ DAYS = [
 
 
 UTC_SLOTS = [
+    "10:30",
+    "12:00",
+    "13:30",
     "15:00",
     "16:30",
     "18:00",
@@ -23,7 +26,8 @@ UTC_SLOTS = [
     "21:00",
     "22:30",
     "24:00",
-    "1:30"
+    "1:30",
+    "3:00"
 ]
 
 
@@ -46,6 +50,11 @@ NO_AVAILABILITY_LATE_PENALTY = 1_000
 PREFERRED_SLOT_PENALTY = 1
 
 EMPTY_DAY_PENALTY = 1
+
+# Penalize edge slots more than center slots.
+# Kept below higher-priority penalties (e.g. late prerec 30),
+# but above 1-point tie-breakers.
+CENTER_SLOT_PENALTY = 2
 
 
 # Number of solutions to show

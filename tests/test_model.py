@@ -10,6 +10,40 @@ from model import build_model
 
 
 class ModelTests(unittest.TestCase):
+    def test_center_slots_are_preferred_over_edges(self):
+        match_data = [
+            {
+                "runner1": "RunnerA",
+                "runner2": "RunnerB",
+                "r1_slots": {0, 1, 2},
+                "r2_slots": {0, 1, 2},
+                "r1_preferred": {0, 1, 2},
+                "r2_preferred": {0, 1, 2},
+                "possible_slots": [0, 1, 2],
+            }
+        ]
+
+        runner_preferred_slots = {
+            "RunnerA": {0, 1, 2},
+            "RunnerB": {0, 1, 2},
+        }
+
+        model_data = build_model(
+            match_data=match_data,
+            num_slots=12,
+            slots_per_day=3,
+            preferred_slots=runner_preferred_slots,
+            slot_values=list(range(12)),
+        )
+
+        solver = cp_model.CpSolver()
+        status = solver.Solve(model_data["model"])
+
+        self.assertIn(status, (cp_model.OPTIMAL, cp_model.FEASIBLE))
+
+        race_slot = model_data["race_slot"]
+        self.assertEqual(solver.Value(race_slot[0]), 1)
+
     def test_conflicting_last_slot_availability_stays_feasible(self):
         # Two different races each include a runner only available
         # at the final slot (11). One race should take slot 11,
