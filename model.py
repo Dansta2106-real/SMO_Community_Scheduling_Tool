@@ -377,7 +377,7 @@ def build_model(
     # because a slot can only be used once
     # ------------------------------------------------
 
-    consecutive_bonus = []
+    consecutive_bonus = {}
 
 
     for s in range(num_slots - 1):
@@ -397,29 +397,16 @@ def build_model(
         )
 
 
-        model.AddBoolAnd(
-            [
-                slot_used[s],
-                slot_used[s + 1]
-            ]
-        ).OnlyEnforceIf(
-            pair
+        model.Add(
+            pair <= slot_used[s]
+        )
+
+        model.Add(
+            pair <= slot_used[s + 1]
         )
 
 
-        model.AddBoolOr(
-            [
-                slot_used[s].Not(),
-                slot_used[s + 1].Not()
-            ]
-        ).OnlyEnforceIf(
-            pair.Not()
-        )
-
-
-        consecutive_bonus.append(
-            pair
-        )
+        consecutive_bonus[s] = pair
 
 
         objective.append(
@@ -427,10 +414,13 @@ def build_model(
         )
 
 
-    for i in range(1, len(consecutive_bonus)):
+    for s in range(1, num_slots - 1):
+
+        if s - 1 not in consecutive_bonus or s not in consecutive_bonus:
+            continue
 
         model.Add(
-            consecutive_bonus[i - 1] + consecutive_bonus[i] <= 1
+            consecutive_bonus[s - 1] + consecutive_bonus[s] <= 1
         )
 
 

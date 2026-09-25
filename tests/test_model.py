@@ -162,6 +162,37 @@ class ModelTests(unittest.TestCase):
         self.assertEqual(solver.Value(prerec_flags[2]), 0)
         self.assertEqual(solver.Value(prerec_flags[3]), 0)
 
+    def test_three_consecutive_races_remain_feasible(self):
+        match_data = [
+            {
+                "runner1": f"Runner{i}A",
+                "runner2": f"Runner{i}B",
+                "r1_slots": {0, 1, 2},
+                "r2_slots": {0, 1, 2},
+                "r1_preferred": {0, 1, 2},
+                "r2_preferred": {0, 1, 2},
+                "possible_slots": [0, 1, 2],
+            }
+            for i in range(3)
+        ]
+
+        model_data = build_model(
+            match_data=match_data,
+            num_slots=12,
+            slots_per_day=3,
+            preferred_slots={},
+            slot_values=list(range(12)),
+        )
+
+        solver = cp_model.CpSolver()
+        status = solver.Solve(model_data["model"])
+
+        self.assertIn(status, (cp_model.OPTIMAL, cp_model.FEASIBLE))
+        self.assertEqual(
+            {solver.Value(slot) for slot in model_data["race_slot"]},
+            {0, 1, 2},
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

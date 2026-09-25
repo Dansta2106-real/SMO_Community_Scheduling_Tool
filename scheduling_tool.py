@@ -198,26 +198,9 @@ for _, row in matches.iterrows():
 
 
 
-    possible_slots = (
-        r1_slots
-        |
-        r2_slots
-    )
-
-
-
-    if not possible_slots:
-        # No runner availability at all for this matchup.
-        # Allow any slot; model objectives will keep it prerecorded
-        # and push it as late as possible.
-        possible_slots = set(
-            range(NUM_SLOTS)
-        )
-
-        print(
-            f"Warning: {r1} vs {r2} has no availability; "
-            "forcing prerecorded late placement"
-        )
+    # Availability is a preference, not a hard scheduling restriction.
+    # The model marks unavailable runners as prerecorded when needed.
+    possible_slots = set(range(NUM_SLOTS))
 
 
 
