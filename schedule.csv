@@ -1,37 +1,45 @@
-runner1,runner2,scheduled,warning
-cmanrulo,Wuxwu,Thursday 15:00,
-reyalsdiorteM,Wuxwu,Thursday 16:30,
-reyalsdiorteM,kurbi,Thursday 19:30,
-DannyGeffen,Sa1102,Thursday 21:00,
-Jadyboyy,BP31,Friday 12:00,
-goryuya,Bugfish,Friday 13:30,
-proprofk,Zack207 (Prerecorded),Friday 15:00,Prerecord before first available slot
-proprofk,twilightskies (Prerecorded),Friday 16:30,
-AdriienSR,BP31 (Prerecorded),Friday 18:00,
-AdriienSR,kurbi,Friday 19:30,
-The-G,Sa1102,Friday 21:00,
-DannyGeffen,SalmonBurt (Prerecorded),Friday 22:30,SalmonBurt has not submitted availabilities
-GoodGoomba,TuxedoCat22 (Prerecorded),Saturday 10:30,
-Rirure,MilovanTm (Prerecorded),Saturday 12:00,MilovanTm has not submitted availabilities
-Lucid,TuxedoCat22 (Prerecorded),Saturday 13:30,TuxedoCat22 has not submitted availabilities
-anttosr,twilightskies (Prerecorded),Saturday 15:00,twilightskies has not submitted availabilities
-Jadyboyy,SMOgamer,Saturday 16:30,
-GMan,PixelPanda,Saturday 18:00,
-GMan,Mark Lukas,Saturday 19:30,
-userodyssey (Prerecorded),Mark Lukas,Saturday 21:00,
-cmanrulo,ZackInTheBoxx (Prerecorded),Saturday 22:30,ZackInTheBoxx has not submitted availabilities
-Game Nerd,Bugfish (Prerecorded),Saturday 24:00,
-GoodGoomba,SMOgamer,Saturday 1:30,
-Game Nerd,Maxsterious (Prerecorded),Saturday 3:00,
-The-G,Vytox (Prerecorded),Sunday 10:30,
-goryuya,Vytox (Prerecorded),Sunday 12:00,Vytox has not submitted availabilities
-Lucid,SalmonBurt (Prerecorded),Sunday 13:30,
-anttosr,MilovanTm (Prerecorded),Sunday 15:00,
-Rirure,Zack207,Sunday 16:30,
-The_H_Pandin (Prerecorded),vCheriba,Sunday 18:00,
-The_H_Pandin (Prerecorded),PixelPanda,Sunday 19:30,The_H_Pandin has not submitted availabilities
-Jambo (Prerecorded),vCheriba,Sunday 21:00,Jambo has not submitted availabilities
-Lapis (Prerecorded),Maxsterious (Prerecorded),Sunday 22:30,Lapis has not submitted availabilities | Maxsterious has not submitted availabilities
-Jambo (Prerecorded),ZackInTheBoxx (Prerecorded),Sunday 24:00,
-Lapis (Prerecorded),Zypher (Prerecorded),Sunday 1:30,
-userodyssey (Prerecorded),Zypher (Prerecorded),Sunday 3:00,userodyssey has not submitted availabilities | Zypher has not submitted availabilities
+runner1,runner2,scheduled,stage,warning
+cmanrulo,Wuxwu,Thursday 13:30,"Division S, Group Stage",
+goryuya,Bugfish,Thursday 15:00,"Division H, 1-1",
+reyalsdiorteM,Wuxwu,Thursday 16:30,"Division S, Group Stage",
+proprofk,Zack207 (Prerecorded),Thursday 18:00,"Division H, 1-1",Prerecord before first available slot
+reyalsdiorteM,kurbi,Thursday 19:30,"Division H, 1-1",
+DannyGeffen,Sa1102,Thursday 21:00,"Division S, Group Stage",
+,,,,
+,,,,
+Jadyboyy,BP31,Friday 12:00,"Division H, 1-1",
+The-G,Sa1102,Friday 13:30,"Division S, Group Stage",
+proprofk,twilightskies (Prerecorded),Friday 15:00,"Division H, 1-1",
+anttosr,twilightskies (Prerecorded),Friday 16:30,"Division H, 1-1",twilightskies has not submitted availabilities
+anttosr,MilovanTm (Prerecorded),Friday 18:00,"Division S, Group Stage",
+AdriienSR,kurbi,Friday 19:30,"Division H, 1-1",
+AdriienSR,BP31 (Prerecorded),Friday 21:00,"Division S, Group Stage",
+DannyGeffen,SalmonBurt (Prerecorded),Friday 22:30,"Division S, Group Stage",SalmonBurt has not submitted availabilities
+,,,,
+,,,,
+The-G,Vytox (Prerecorded),Saturday 10:30,"Division S, Group Stage",
+Rirure,MilovanTm (Prerecorded),Saturday 12:00,"Division S, Group Stage",MilovanTm has not submitted availabilities
+Lucid,SalmonBurt (Prerecorded),Saturday 13:30,"Division S, Group Stage",
+userodyssey (Prerecorded),Mark Lukas,Saturday 15:00,"Division H, 1-1",
+Jadyboyy,SMOgamer,Saturday 16:30,"Division H, 1-1",
+Jadyboyy,SMOgamer,Saturday 18:00,"Division H, 1-1",
+Jadyboyy,SMOgamer,Saturday 19:30,"Division H, 1-1",
+GMan,Mark Lukas,Saturday 21:00,"Division H, 1-1",
+cmanrulo,ZackInTheBoxx (Prerecorded),Saturday 22:30,"Division H, 1-1",ZackInTheBoxx has not submitted availabilities
+Game Nerd,Maxsterious (Prerecorded),Saturday 24:00,"Division H, 1-1",
+GoodGoomba,SMOgamer,Saturday 1:30,"Division H, 1-1",
+GoodGoomba,TuxedoCat22 (Prerecorded),Saturday 3:00,"Division H, 1-1",
+,,,,
+,,,,
+Game Nerd,Bugfish (Prerecorded),Sunday 10:30,"Division H, 1-1",
+goryuya,Vytox (Prerecorded),Sunday 12:00,"Division H, 1-1",Vytox has not submitted availabilities
+Lucid,TuxedoCat22 (Prerecorded),Sunday 13:30,"Division S, Group Stage",TuxedoCat22 has not submitted availabilities
+The_H_Pandin (Prerecorded),PixelPanda,Sunday 15:00,"Division S, Group Stage",The_H_Pandin has not submitted availabilities
+Rirure,Zack207,Sunday 16:30,"Division H, 1-1",
+GMan,PixelPanda,Sunday 18:00,"Division S, Group Stage",
+The_H_Pandin (Prerecorded),vCheriba,Sunday 19:30,"Division H, 1-1",
+Jambo (Prerecorded),vCheriba,Sunday 21:00,"Division S, Group Stage",Jambo has not submitted availabilities
+Jambo (Prerecorded),ZackInTheBoxx (Prerecorded),Sunday 22:30,"Division S, Group Stage",
+Lapis (Prerecorded),Maxsterious (Prerecorded),Sunday 24:00,"Division S, Group Stage",Lapis has not submitted availabilities | Maxsterious has not submitted availabilities
+userodyssey (Prerecorded),Zypher (Prerecorded),Sunday 1:30,"Division S, Group Stage",userodyssey has not submitted availabilities | Zypher has not submitted availabilities
+Lapis (Prerecorded),Zypher (Prerecorded),Sunday 3:00,"Division S, Group Stage",

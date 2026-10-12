@@ -122,6 +122,9 @@ def build_dataframe(
                 "scheduled":
                     scheduled_label,
 
+                "stage":
+                    match.get("stage", ""),
+
                 "warning":
                     " | ".join(warnings),
             }
@@ -138,15 +141,48 @@ def build_dataframe(
         by="slot"
     )
 
+    df_slots = df["slot"].tolist()
 
-    return df[
+    df = df[
         [
             "runner1",
             "runner2",
             "scheduled",
+            "stage",
             "warning"
         ]
     ]
+
+    df.attrs["slots"] = df_slots
+
+    return df
+
+
+def add_gap_rows(df, slots_per_day):
+    """Insert 1 blank row for a slot gap, 2 blank rows between days."""
+
+    slots = df.attrs["slots"]
+
+    blank = {column: "" for column in df.columns}
+
+    rows = []
+
+    for position, (_, row) in enumerate(df.iterrows()):
+
+        if position > 0:
+
+            previous = slots[position - 1]
+            current = slots[position]
+
+            if previous // slots_per_day != current // slots_per_day:
+                rows.extend([blank, blank])
+
+            elif current - previous > 1:
+                rows.append(blank)
+
+        rows.append(row.to_dict())
+
+    return pd.DataFrame(rows, columns=df.columns)
 
 
 def find_prerec_first_slot_violations(
@@ -250,6 +286,11 @@ def display_solutions(
             match_data,
             all_slots,
             display_time
+        )
+
+        df = add_gap_rows(
+            df,
+            slots_per_day
         )
 
 

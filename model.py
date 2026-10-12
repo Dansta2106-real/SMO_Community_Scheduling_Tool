@@ -224,6 +224,42 @@ def build_model(
         slot_used.append(
             used
         )
+
+    # ------------------------------------------------
+    # Finals: a matchup listed exactly 3 times must be
+    # scheduled in 3 consecutive slots on the same day
+    # (hard constraint, overrides all other preferences)
+    # ------------------------------------------------
+
+    matchup_groups = {}
+
+    for i, match in enumerate(match_data):
+
+        matchup_groups.setdefault(
+            (match["runner1"], match["runner2"]),
+            []
+        ).append(i)
+
+
+    for indices in matchup_groups.values():
+
+        if len(indices) != 3:
+            continue
+
+        model.AddAllowedAssignments(
+            [race_slot[i] for i in indices],
+            [
+                (s, s + 1, s + 2)
+                for s in range(num_slots - 2)
+                if is_adjacent_slot_pair(
+                    s, s + 1, slot_values, slots_per_day
+                )
+                and is_adjacent_slot_pair(
+                    s + 1, s + 2, slot_values, slots_per_day
+                )
+            ]
+        )
+
     objective = []
 
 

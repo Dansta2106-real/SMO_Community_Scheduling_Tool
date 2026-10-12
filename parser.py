@@ -295,6 +295,16 @@ def load_matchups(
     )
 
 
+    if "stage" not in matches.columns:
+        matches["stage"] = ""
+
+    matches["stage"] = (
+        matches["stage"]
+        .fillna("")
+        .astype(str)
+        .str.strip()
+    )
+
     return matches
 
 

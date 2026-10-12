@@ -210,6 +210,8 @@ for _, row in matches.iterrows():
 
             "runner2": r2,
 
+            "stage": row.get("stage", ""),
+
             "r1_slots": r1_slots,
 
             "r2_slots": r2_slots,
